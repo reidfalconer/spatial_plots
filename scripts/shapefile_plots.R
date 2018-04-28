@@ -1,15 +1,15 @@
-setwd("/Users/17867029/Desktop/Current Workflow/SA_DC")
-
 # load libraries
 library(ggplot2)
 library(sp)
 library(rgdal)
 library(rgeos)
 library(maptools)
+library(plyr)
+library(tidyverse)
 if (!require(gpclib)) install.packages("gpclib", type="source")
 
 # read data into a SpatialPolygonsDataFrame object
-sa_dc <- readOGR(dsn = ".", layer = "ZAF_adm2")
+sa_dc <- readOGR(dsn = "shapefile", layer = "ZAF_adm2")
 
 # add to data a new column termed "id" composed of the rownames of data
 sa_dc@data$id <- rownames(sa_dc@data)
@@ -25,7 +25,7 @@ unemployment <-  as.vector(runif(52, 0, 20))
 unemployment_df <- as.data.frame(cbind(id, unemployment))
 head(unemployment_df)
 
-# unemployment_df$unemployment=as.numeric(levels(unemployment_df$unemployment))[unemployment_df$unemployment]
+unemployment_df$unemployment=as.numeric(levels(unemployment_df$unemployment))[unemployment_df$unemployment]
 
 # attaching unemployment metric to shapefile attributes 
 sa_dc@data  <- join(sa_dc@data, unemployment_df, by="id")
@@ -59,3 +59,17 @@ map_projected <- map +
   coord_map()
 
 print(map_projected)
+
+
+
+# Using ssplot instead of ggplot - this means one doesnt have to make a df. 
+spplot(sa_dc, "unemployment", main = "District Councils", sub = "Unemployment", col = "transparent")
+
+#color palette  
+library(RColorBrewer)
+display.brewer.all()
+my.palette <- brewer.pal(n = 8, name = "Blues") #color selection no.8 #of blues
+spplot(sa_dc, "unemployment", col.regions = my.palette, cuts = 6, col = "transparent") #6 shades of blue
+
+
+
