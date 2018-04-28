@@ -25,7 +25,7 @@ unemployment <-  as.vector(runif(52, 0, 20))
 unemployment_df <- as.data.frame(cbind(id, unemployment))
 head(unemployment_df)
 
-unemployment_df$unemployment=as.numeric(levels(unemployment_df$unemployment))[unemployment_df$unemployment]
+#unemployment_df$unemployment=as.numeric(levels(unemployment_df$unemployment))[unemployment_df$unemployment]
 
 # attaching unemployment metric to shapefile attributes 
 sa_dc@data  <- join(sa_dc@data, unemployment_df, by="id")
@@ -36,6 +36,7 @@ dc_points <- fortify(sa_dc, region = "id")
 # merge the "fortified" data with the data from spatial object
 sa_dc_df <- merge(dc_points, sa_dc@data, by = "id")
 head(sa_dc_df)
+
 # Or be tidy: 
 # library(plyr)
 # watershedDF <- join(watershedPoints, dataProjected@data, by = "id")
@@ -59,7 +60,6 @@ map_projected <- map +
   coord_map()
 
 print(map_projected)
-
 
 
 # Using ssplot instead of ggplot - this means one doesnt have to make a df. 
